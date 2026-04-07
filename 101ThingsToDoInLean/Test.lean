@@ -26,6 +26,17 @@ lemma corl1 (a b : ℤ) (hb : b ≠ 0) : Nonempty {y : ℤ | ∃ x : ℤ, y = a 
     linarith
 
 lemma corl2 (a b : ℤ) (hb : b ≠ 0) : ∃ (q : ℤ), a - q * b < b := by
+  have h1 := corl1
+  simp only [ge_iff_le, exists_and_right, Set.coe_setOf, nonempty_subtype, ↓existsAndEq,
+    Int.sub_nonneg, true_and] at h1
+  specialize h1 a b hb
+  obtain ⟨q, hq⟩ := h1
+  have : 0 ≤ a - q * b := by linarith
+  use q + b - 1
+  ring_nf
+  suffices h : a - q * b + b < b ^ 2 + b
+  . linarith
+  gcongr ?_ + b
   sorry
 
 theorem div_alg (a b : ℤ) (hb : b > 0) : ∃ q r : ℤ, a = b * q + r ∧ (0 ≤ r ∧ r < b) := by
@@ -46,3 +57,21 @@ theorem div_alg (a b : ℤ) (hb : b > 0) : ∃ q r : ℤ, a = b * q + r ∧ (0 �
   . constructor
     . sorry
     . sorry
+
+lemma gcd_iff (a b d e : ℤ) (ha : a ≠ 0) (hb : b ≠ 0) (hd : d ≠ 0) : (d = ((gcd a b) : ℤ)) ↔ ((d ∣ a ∧ d ∣ b) ∧ ((e ∣ a ∧ e ∣ b) → e ∣ d)) := by
+  constructor
+  . intro h
+    constructor
+    . constructor
+      . rw [h]
+        exact gcd_dvd_left a b
+      . rw [h]
+        exact gcd_dvd_right a b
+    . intro h1
+      sorry
+  .
+    intro h
+    obtain ⟨h1, h3⟩ := h
+    obtain ⟨h1, h2⟩ := h1
+    simp at h3
+    sorry
